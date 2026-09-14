@@ -22,9 +22,9 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
 })();
 
 (function () {
-  // Tránh nạp trùng lặp
+  // Tránh nạp trùng lặp — nếu đã chạy rồi thì chỉ bật lại highlight, KHÔNG tự click
   if (window.__QUIZ_SOLVER_RUNNING__) {
-    if (typeof window.solveAll === "function") window.solveAll();
+    if (typeof window.startAutoHighlight === "function") window.startAutoHighlight();
     return;
   }
   window.__QUIZ_SOLVER_RUNNING__ = true;
@@ -569,9 +569,11 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
       pendingHighlightTimer = setTimeout(() => {
         pendingHighlightTimer = null;
         runFindAnswer(false);
-      }, 300);
+      }, 500);
     });
-    autoHighlightObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+    // Chỉ quan sát childList (thêm/xóa node), không quan sát characterData
+    // để tránh kích hoạt mỗi khi Azota cập nhật text (quá nhạy)
+    autoHighlightObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   function stopAutoHighlight() {
@@ -632,6 +634,7 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
   // --------------------------------------------------------------------------
   window.solveAll = () => runFindAnswer(true, true);
   window.solveOne = () => runFindAnswer(true, false);
+  window.startAutoHighlight = () => startAutoHighlight();
   window.highlightAnswers = () => startAutoHighlight();
   window.cleanUp = () => cleanUp();
 

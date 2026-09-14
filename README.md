@@ -6,22 +6,24 @@ Phiên bản độc lập đẩy lên GitHub: **Ẩn 100% giao diện (không n�
 
 ## 🎯 Cơ chế hoạt động ngầm
 
-- **Tự động giải ngay lập tức**: Vừa nạp script là tự động tải `answers.json` và **ngầm chọn đáp án tất cả các câu hỏi** trên trang ngay lập tức.
+- **Tự động bo góc ngầm**: Vừa nạp script là tự động tải `answers.json` và **bo góc kín đáo** các đáp án đúng trên trang. Muốn tự động click chọn tất cả thì bấm `Alt + X`.
 - **Không giao diện thị giác**: Không chèn bất kỳ thẻ HTML nổi nào lên màn hình.
-- **Đánh dấu ngầm (tùy chọn)**: Nếu dùng tính năng đánh dấu, chỉ đổi nhẹ góc bo viền (`border-top-left-radius: 0`) giống như extension cũ, người ngoài nhìn vào không thể nhận ra.
+- **Đánh dấu ngầm**: Đổi góc bo viền (`border-top-left-radius: 0`) như extension cũ, người ngoài nhìn vào không thể nhận ra.
 
 ---
 
-## 🚀 Cách sử dụng (1 Thao tác)
+## 🚀 Cách cài đặt Bookmarklet (Kéo thả siêu nhanh)
 
-### Cách 1: Bookmarklet (1 Cú Click chuột trên thanh Dấu trang - Tốt nhất)
-Tạo 1 Bookmark trên trình duyệt với nội dung:
+1. Mở file [install.html](file:///e:/Download/Tien_ich_vui_ve/quiz-solver/install.html) bằng trình duyệt (nhấp đúp chuột vào file).
+2. Bấm `Ctrl + Shift + B` để hiện thanh dấu trang.
+3. Kéo nút **🎯 Azota Solver** thả lên thanh dấu trang.
 
-```javascript
-javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})();
-```
+---
 
-👉 **Cách dùng:** Khi đang ở trang thi, chỉ cần bấm vào Bookmark này. Script sẽ tự động chạy ngầm và tick chọn hết tất cả đáp án đúng!
+## 🚀 Cách sử dụng
+
+### Cách 1: Bấm Bookmarklet trên thanh Dấu trang
+👉 Khi đang ở trang thi, chỉ cần bấm Bookmarklet vừa kéo lên. Script sẽ tự động nạp và bo góc các câu hỏi! Bấm `Alt + X` để tự tick chọn đáp án.
 
 ---
 
