@@ -635,8 +635,9 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
   window.highlightAnswers = () => startAutoHighlight();
   window.cleanUp = () => cleanUp();
 
-  // TỰ ĐỘNG CHẠY NGẦM CHỌN HẾT ĐÁP ÁN NGAY KHI NẠP XONG DỮ LIỆU
+  // Tải dữ liệu rồi chỉ bật auto-highlight ngầm (bo góc kín đáo).
+  // Muốn tự chọn đáp án: bấm Alt+X hoặc gọi solveAll() trong Console.
   fetchAnswerBank().then(() => {
-    runFindAnswer(true, true);
+    startAutoHighlight();
   });
 })();
