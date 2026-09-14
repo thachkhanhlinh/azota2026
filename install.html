@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cài đặt Azota Bookmarklet</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      background: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 32px 40px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      max-width: 480px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .drag-button {
+      display: inline-block;
+      margin: 24px 0 16px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: grab;
+      border: 2px dashed #60a5fa;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      transition: transform 0.2s;
+    }
+    .drag-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+    }
+    .instruction {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: #e2e8f0;
+      margin-top: 15px;
+      text-align: left;
+    }
+    .tip {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>⚡ Kéo thả Bookmarklet</h2>
+    <p>Nhấn giữ chuột vào nút bên dưới và <b>kéo thẳng lên thanh dấu trang (Bookmarks bar)</b> của bạn:</p>
+
+    <!-- Nút kéo thả Bookmarklet -->
+    <a class="drag-button" href="javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})();">
+      🎯 Azota Solver
+    </a>
+
+    <div class="instruction">
+      <div class="tip">💡 Mẹo:</div>
+      1. Bấm <b>Ctrl + Shift + B</b> nếu chưa thấy thanh dấu trang.<br>
+      2. Kéo nút xanh <b>🎯 Azota Solver</b> lên thả vào thanh dấu trang là xong.<br>
+      3. Khi làm bài, chỉ cần bấm nút này trên thanh dấu trang.
+    </div>
+  </div>
+</body>
+</html>
