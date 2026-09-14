@@ -22,10 +22,10 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
 })();
 
 (function () {
-  // Tránh nạp trùng lặp — nếu đã chạy rồi thì chỉ bật lại highlight, KHÔNG tự click
+  // Neu script da chay (SPA: chuyen bai thi khong reload trang): don dep cu, khoi tao lai
   if (window.__QUIZ_SOLVER_RUNNING__) {
-    if (typeof window.startAutoHighlight === "function") window.startAutoHighlight();
-    return;
+    if (typeof window.cleanUp === 'function') window.cleanUp();
+    window.__QUIZ_SOLVER_RUNNING__ = false;
   }
   window.__QUIZ_SOLVER_RUNNING__ = true;
 
@@ -281,19 +281,7 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
       if (!isMatch) continue;
 
       if (doHighlight) {
-        // Tim container block phu hop de bo goc
-        let target = label;
-        let p = label.parentElement;
-        while (p && p !== rootElement && p !== document.body) {
-          const style = window.getComputedStyle(p);
-          const rect = p.getBoundingClientRect();
-          const rootRect = rootElement.getBoundingClientRect();
-          const isBlock = ['block','flex','grid','inline-flex','inline-block'].includes(style.display);
-          const isSized = rect.height >= 20 && rect.height < rootRect.height * 0.6 && rect.width > 40;
-          const noQ = !p.querySelector('.question-standalone-content-box');
-          if (isBlock && isSized && noQ) { target = p; break; }
-          p = p.parentElement;
-        }
+        const target = findHighlightTarget(label, rootElement) || label;
         applyCornerRadiusMarker(target);
         target.classList.add('extension-highlight');
         target.dataset.questionId = questionId;
@@ -356,10 +344,10 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
     }
   }
 
-  // Đánh dấu góc bo siêu kín đáo (không lộ màu sắc)
+  // Danh dau goc bo sieu kin dao (khong lo mau sac)
   function drawCornerHighlight(rect, questionId, startElement, rootElement = document.body) {
     if (!rect || rect.width <= 0 || rect.height <= 0) return;
-    const target = findSubtleHighlightTarget(startElement, rootElement) || startElement;
+    const target = findHighlightTarget(startElement, rootElement) || startElement;
     if (!target) return;
 
     applyCornerRadiusMarker(target);
@@ -411,19 +399,26 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
     );
   }
 
-  function findSubtleHighlightTarget(startElement, rootElement) {
-    let parent = startElement;
+  // Tim element de bo goc: uu tien element co border-radius > 0 (thay doi ro rang)
+  // neu khong co, dung block element co kich thuoc hop ly
+  function findHighlightTarget(startElement, rootElement) {
     let blockCandidate = null;
-    while (parent && parent !== document.body && parent !== rootElement.parentElement) {
-      if (isHighlightableAnswerElement(parent, rootElement)) return parent;
-      if (!blockCandidate && parent.tagName) {
+    let parent = startElement;
+    while (parent && parent !== rootElement && parent !== document.body) {
+      if (!parent.querySelector('.question-standalone-content-box')) {
         const style = window.getComputedStyle(parent);
         const rect = parent.getBoundingClientRect();
-        const rootRect = rootElement.getBoundingClientRect();
-        const isBlock = ['block','flex','grid','inline-flex','inline-block','table-row'].includes(style.display);
-        const isSized = rect.width > 40 && rect.height >= 16 && rect.height < rootRect.height * 0.55;
-        const noQ = !parent.querySelector('.question-standalone-content-box');
-        if (isBlock && isSized && noQ) blockCandidate = parent;
+        // Uu tien: element co border-radius hien tai > 0
+        const br = parseFloat(style.borderTopLeftRadius) || parseFloat(style.borderTopRightRadius)
+                || parseFloat(style.borderRadius) || 0;
+        if (br > 0) return parent;
+        // Luu fallback: block co kich thuoc hop ly
+        if (!blockCandidate) {
+          const rootH = Math.max((rootElement.getBoundingClientRect() || {}).height || 0, 80);
+          const isBlock = ['block','flex','grid','inline-flex','inline-block'].includes(style.display);
+          const isSized = rect.width > 40 && rect.height >= 20 && rect.height < rootH * 0.6;
+          if (isBlock && isSized) blockCandidate = parent;
+        }
       }
       parent = parent.parentElement;
     }
