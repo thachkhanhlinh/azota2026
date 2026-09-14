@@ -262,10 +262,66 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
     return null;
   }
 
+  // Radio-first: tim thang input[type=radio] -> match label text -> highlight/click
+  // Day la cach on dinh nhat cho Angular/SPA app nhu Azota
+  function processViaRadios(answers, questionId, doHighlight, doClick, rootElement) {
+    const normalizedAnswers = answers.map(a => normalizeText(a)).filter(Boolean);
+    const radios = Array.from(rootElement.querySelectorAll('input[type="radio"]'));
+    if (!radios.length) return { found: false, clicked: false };
+
+    for (const radio of radios) {
+      // Tim label: boc ngoai, hoac label[for=id], hoac parentElement
+      const label = radio.closest('label') ||
+        (radio.id ? rootElement.querySelector('label[for="' + radio.id + '"]') : null) ||
+        radio.parentElement;
+      if (!label) continue;
+
+      const labelText = normalizeText(label.textContent || '');
+      const isMatch = normalizedAnswers.some(ans => ans && findNormalizedAnswerIndex(labelText, ans) !== -1);
+      if (!isMatch) continue;
+
+      if (doHighlight) {
+        // Tim container block phu hop de bo goc
+        let target = label;
+        let p = label.parentElement;
+        while (p && p !== rootElement && p !== document.body) {
+          const style = window.getComputedStyle(p);
+          const rect = p.getBoundingClientRect();
+          const rootRect = rootElement.getBoundingClientRect();
+          const isBlock = ['block','flex','grid','inline-flex','inline-block'].includes(style.display);
+          const isSized = rect.height >= 20 && rect.height < rootRect.height * 0.6 && rect.width > 40;
+          const noQ = !p.querySelector('.question-standalone-content-box');
+          if (isBlock && isSized && noQ) { target = p; break; }
+          p = p.parentElement;
+        }
+        applyCornerRadiusMarker(target);
+        target.classList.add('extension-highlight');
+        target.dataset.questionId = questionId;
+      }
+
+      if (doClick && !radio.checked) {
+        if (label.scrollIntoView) label.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+        radio.click();
+        // Thu click label de Angular reactive forms nhan duoc su kien
+        if (!radio.checked && label !== radio) label.click();
+        return { found: true, clicked: true };
+      }
+
+      return { found: true, clicked: false };
+    }
+
+    return { found: false, clicked: false };
+  }
+
   function drawHighlightAndClick(answers, questionId, doHighlight, doClick, rootElement = document.body) {
     try {
       if (!answers || answers.length === 0) return false;
 
+      // Thu radio-first truoc (on dinh nhat cho Angular/SPA)
+      const radioResult = processViaRadios(answers, questionId, doHighlight, doClick, rootElement);
+      if (radioResult.found) return radioResult.clicked;
+
+      // Fallback: text-walker (cho cac trang khong dung radio)
       let clickedAnswer = false;
       const walker = document.createTreeWalker(rootElement, NodeFilter.SHOW_TEXT);
       let currentNode;
@@ -357,11 +413,21 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
 
   function findSubtleHighlightTarget(startElement, rootElement) {
     let parent = startElement;
+    let blockCandidate = null;
     while (parent && parent !== document.body && parent !== rootElement.parentElement) {
       if (isHighlightableAnswerElement(parent, rootElement)) return parent;
+      if (!blockCandidate && parent.tagName) {
+        const style = window.getComputedStyle(parent);
+        const rect = parent.getBoundingClientRect();
+        const rootRect = rootElement.getBoundingClientRect();
+        const isBlock = ['block','flex','grid','inline-flex','inline-block','table-row'].includes(style.display);
+        const isSized = rect.width > 40 && rect.height >= 16 && rect.height < rootRect.height * 0.55;
+        const noQ = !parent.querySelector('.question-standalone-content-box');
+        if (isBlock && isSized && noQ) blockCandidate = parent;
+      }
       parent = parent.parentElement;
     }
-    return startElement;
+    return blockCandidate || startElement;
   }
 
   function isHighlightableAnswerElement(element, rootElement) {
@@ -377,8 +443,13 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
   function clickAnswerElement(startElement, textRect, rootElement) {
     try {
       if (!startElement) return false;
-      if (clickByAnswerCoordinates(textRect, rootElement)) return true;
 
+      // Cuon phan tu vao viewport truoc khi click bang toa do
+      if (startElement.scrollIntoView) {
+        startElement.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      }
+
+      // Thu click radio truoc (khong phu thuoc viewport)
       let parent = startElement;
       while (parent && parent !== document.body && parent !== rootElement.parentElement) {
         const radio = parent.querySelector && parent.querySelector('input[type="radio"]');
@@ -386,12 +457,19 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
           radio.click();
           return true;
         }
+        parent = parent.parentElement;
+      }
 
+      // Thu click theo toa do (sau khi da scroll vao view)
+      if (clickByAnswerCoordinates(textRect, rootElement)) return true;
+
+      // Fallback: click phan tu co the click
+      parent = startElement;
+      while (parent && parent !== document.body && parent !== rootElement.parentElement) {
         if (isClickableAnswerElement(parent)) {
           dispatchClick(parent);
           return true;
         }
-
         parent = parent.parentElement;
       }
 

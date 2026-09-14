@@ -28,18 +28,12 @@
       max-width: 520px;
       width: 100%;
     }
-    h1 {
-      font-size: 24px;
-      margin-top: 0;
-      color: #38bdf8;
-    }
-    p {
-      color: #94a3b8;
-      font-size: 15px;
-      line-height: 1.6;
-    }
+    h1 { font-size: 24px; margin-top: 0; color: #38bdf8; }
+    p { color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 8px; }
+
+    /* --- Bookmarklet drag box --- */
     .drag-box {
-      margin: 28px 0;
+      margin: 20px 0;
       padding: 20px;
       border: 2px dashed #38bdf8;
       border-radius: 12px;
@@ -59,64 +53,154 @@
       user-select: none;
       -webkit-user-drag: element;
     }
-    .drag-button:active {
-      cursor: grabbing;
+    .drag-button:active { cursor: grabbing; }
+    .hint { font-size: 12px; color: #64748b; margin-top: 10px; }
+
+    /* --- Console copy box --- */
+    .console-box {
+      margin: 20px 0 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
     }
+    .console-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .console-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .code-text {
+      flex: 1;
+      background: #020617;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #a5f3fc;
+      word-break: break-all;
+      user-select: all;
+      border: 1px solid #1e293b;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+    }
+    .copy-btn:hover { background: #38bdf8; color: #0f172a; }
+    .copy-btn.copied { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+    /* --- Steps --- */
     .steps {
       background: #0f172a;
       border-radius: 12px;
-      padding: 16px 20px;
+      padding: 14px 18px;
       font-size: 14px;
       color: #cbd5e1;
       text-align: left;
-      line-height: 1.8;
+      line-height: 1.9;
       border: 1px solid #1e293b;
+      margin-top: 20px;
     }
     .step-num {
       display: inline-block;
-      width: 22px;
-      height: 22px;
+      width: 20px; height: 20px;
       background: #38bdf8;
       color: #0f172a;
       font-weight: bold;
       border-radius: 50%;
       text-align: center;
-      line-height: 22px;
+      line-height: 20px;
       margin-right: 8px;
-      font-size: 12px;
+      font-size: 11px;
     }
-    .code-box {
-      margin-top: 15px;
-      background: #020617;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 12px;
-      color: #a5f3fc;
-      word-break: break-all;
-      text-align: left;
-      user-select: all;
+    .divider {
+      border: none;
+      border-top: 1px solid #334155;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Cài đặt nhanh</h1>
-    <p>Cách cài nhanh nhất cho mọi trình duyệt (Chrome, Cốc Cốc, Edge):</p>
 
+    <!-- Cách 1: Bookmarklet -->
+    <p>Cách 1 — Kéo thả vào thanh dấu trang:</p>
     <div class="drag-box">
-      <!-- Nút này được thiết kế để kéo thả thẳng lên thanh bookmark -->
-      <a class="drag-button" href="javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})();" onclick="alert('Hãy dùng chuột KÉO nút này lên thanh Bookmark (thanh dấu trang) trên cùng của trình duyệt nhé!'); return false;">
+      <a class="drag-button"
+         href="javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})();"
+         onclick="alert('Hãy dùng chuột KÉO nút này lên thanh Bookmark (thanh dấu trang) trên cùng của trình duyệt nhé!'); return false;">
         Google Dịch
       </a>
-      <div style="font-size: 12px; color: #64748b; margin-top: 10px;">(Nhấn giữ chuột trái vào nút trên rồi kéo lên thanh dấu trang)</div>
+      <div class="hint">(Nhấn giữ chuột trái rồi kéo lên thanh dấu trang)</div>
     </div>
 
+    <hr class="divider">
+
+    <!-- Cách 2: Console -->
+    <p>Cách 2 — Dán vào Console (F12):</p>
+    <div class="console-box">
+      <div class="console-label">Console &rsaquo; Dán lệnh này &rsaquo; Enter</div>
+      <div class="console-row">
+        <div class="code-text" id="consoleCode">(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})()</div>
+        <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Hướng dẫn -->
     <div class="steps">
-      <div><span class="step-num">1</span>Bấm phím <b>Ctrl + Shift + B</b> nếu chưa thấy thanh dấu trang.</div>
-      <div><span class="step-num">2</span>Lấy chuột <b>kéo nút xanh 🎯 Azota 2026</b> thả vào thanh dấu trang.</div>
-      <div><span class="step-num">3</span>Vào trang bài thi, bấm vào nút đó trên thanh dấu trang là xong!</div>
+      <div><span class="step-num">1</span>Bấm <b>Ctrl + Shift + B</b> nếu chưa thấy thanh dấu trang.</div>
+      <div><span class="step-num">2</span>Kéo nút <b>Google Dịch</b> lên thanh dấu trang.</div>
+      <div><span class="step-num">3</span>Vào trang bài thi → bấm nút trên thanh dấu trang → script tự chạy.</div>
+      <div><span class="step-num">4</span>Nhấn <b>Alt + X</b> để tự chọn đáp án.</div>
     </div>
   </div>
+
+  <script>
+    function copyCode() {
+      const code = document.getElementById('consoleCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Đã copy!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        // Fallback cho trình duyệt cũ
+        const el = document.getElementById('consoleCode');
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Đã copy!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
 </body>
 </html>
