@@ -30,8 +30,8 @@ const __QUIZ_SOLVER_SCRIPT_URL__ = (function () {
   window.__QUIZ_SOLVER_RUNNING__ = true;
 
   const CONFIG = {
-    githubUser: "YOUR_USERNAME",
-    githubRepo: "YOUR_REPO",
+    githubUser: "thachkhanhlinh",
+    githubRepo: "azota2026",
     branch: "main",
     answersFileName: "answers.json",
     customAnswersUrl: ""
