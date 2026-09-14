@@ -18,9 +18,8 @@ Phiên bản độc lập đẩy lên GitHub: **Ẩn 100% giao diện (không n�
 Tạo 1 Bookmark trên trình duyệt với nội dung:
 
 ```javascript
-javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/<TÊN_GITHUB>/<TÊN_REPO>@main/solve.js?v='+Date.now();document.body.appendChild(s);})();
+javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now();document.body.appendChild(s);})();
 ```
-*(Thay `<TÊN_GITHUB>` và `<TÊN_REPO>` thành thông tin repo của bạn)*.
 
 👉 **Cách dùng:** Khi đang ở trang thi, chỉ cần bấm vào Bookmark này. Script sẽ tự động chạy ngầm và tick chọn hết tất cả đáp án đúng!
 
@@ -30,7 +29,7 @@ javascript:(function(){const s=document.createElement('script');s.src='https://c
 Nếu không muốn dùng Bookmark: Mở `F12` -> chọn tab **Console** -> dán đúng 1 dòng này và ấn `Enter`:
 
 ```javascript
-fetch('https://cdn.jsdelivr.net/gh/<TÊN_GITHUB>/<TÊN_REPO>@main/solve.js?v='+Date.now()).then(r=>r.text()).then(eval);
+fetch('https://cdn.jsdelivr.net/gh/thachkhanhlinh/azota2026@main/solve.js?v='+Date.now()).then(r=>r.text()).then(eval);
 ```
 
 ---
